@@ -1,0 +1,14 @@
+{
+  "name": "diplom-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "front",
+    "back"
+  ],
+  "scripts": {
+    "dev:front": "npm run dev -w front",
+    "dev:back": "npm run dev -w back",
+    "build": "npm run build -w front && npm run build -w back"
+  }
+}
