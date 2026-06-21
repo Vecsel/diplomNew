@@ -37,16 +37,18 @@ async function seed() {
 
   const adminHash = await bcrypt.hash("admin123", 10);
   const managerHash = await bcrypt.hash("manager123", 10);
+  const diplomHash = await bcrypt.hash("diplom123", 10);
 
   await query(
     `
     INSERT INTO users (username, email, password_hash, full_name, is_active)
     VALUES
       ('admin', 'admin@example.com', $1, 'System Admin', TRUE),
-      ('manager', 'manager@example.com', $2, 'Team Manager', TRUE)
+      ('manager', 'manager@example.com', $2, 'Team Manager', TRUE),
+      ('diplom', 'diplom@example.com', $3, 'Демо для комиссии', TRUE)
     ON CONFLICT (username) DO NOTHING
     `,
-    [adminHash, managerHash]
+    [adminHash, managerHash, diplomHash]
   );
 
   await query(
@@ -67,6 +69,17 @@ async function seed() {
     FROM users u
     JOIN role_groups rg ON rg.code = 'managers'
     WHERE u.username = 'manager'
+    ON CONFLICT DO NOTHING
+    `
+  );
+
+  await query(
+    `
+    INSERT INTO user_role_groups (user_id, role_group_id)
+    SELECT u.id, rg.id
+    FROM users u
+    JOIN role_groups rg ON rg.code = 'managers'
+    WHERE u.username = 'diplom'
     ON CONFLICT DO NOTHING
     `
   );

@@ -38,7 +38,6 @@ export function GroupsToolbar({
           placeholder={ru.groups.toolbar.searchPlaceholder}
           value={query}
           onChange={(e) => onQueryChange(e.target.value)}
-          disabled={disabled}
           className="h-10 bg-background/80"
         />
       </div>

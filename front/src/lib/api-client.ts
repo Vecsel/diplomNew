@@ -1,8 +1,6 @@
 import { toast } from "sonner";
 import { ru } from "@/lib/i18n/ru";
 
-const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "http://localhost:4000/api").replace(/\/$/, "");
-
 /** Dispatched when an authenticated API call returns 401 (handled in AuthProvider). */
 export const API_UNAUTHORIZED_EVENT = "app:api-unauthorized";
 
@@ -32,6 +30,17 @@ export class ApiError extends Error {
   }
 }
 
+function getApiBaseUrl(): string {
+  const raw = import.meta.env.VITE_API_URL;
+  if (!raw || typeof raw !== "string") {
+    throw new ApiError(
+      "Не задан VITE_API_URL. Скопируйте front/.env.example в front/.env и укажите URL API модуля.",
+      0
+    );
+  }
+  return raw.replace(/\/$/, "");
+}
+
 function parseResponseBody(raw: string): unknown {
   if (!raw) return null;
   try {
@@ -51,7 +60,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
 
   let response: Response;
   try {
-    response = await fetch(`${API_BASE_URL}${path}`, {
+    response = await fetch(`${getApiBaseUrl()}${path}`, {
       method: options.method ?? "GET",
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined

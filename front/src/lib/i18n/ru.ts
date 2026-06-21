@@ -55,7 +55,14 @@ export const ru = {
     loginPlaceholder: "Логин или email",
     passwordPlaceholder: "Пароль",
     submit: "Войти",
-    submitting: "Вход…"
+    submitting: "Вход…",
+    demoHintTitle: "Демо-доступ для экспертной комиссии",
+    demoHintDescription: "Нажмите на значение или кнопку, чтобы скопировать и вставить в поля формы.",
+    demoLoginLabel: "Логин",
+    demoPasswordLabel: "Пароль",
+    demoFillForm: "Заполнить форму",
+    demoCopied: "Скопировано",
+    demoFilled: "Данные подставлены в форму"
   },
   users: {
     pageTitle: "Пользователи",

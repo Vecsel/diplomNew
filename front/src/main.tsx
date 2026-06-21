@@ -10,7 +10,7 @@ import "./index.css";
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider defaultTheme="system" storageKey="app-theme">
-      <BrowserRouter basename="/diplomNew">
+      <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "") || "/"}>
         <AuthProvider>
           <AppToaster />
           <AppRouter />

@@ -9,7 +9,7 @@ export const app = express();
 
 app.use(
   cors({
-    origin: env.corsOrigin
+    origin: env.corsOrigins.length === 1 ? env.corsOrigins[0] : env.corsOrigins
   })
 );
 app.use(express.json());

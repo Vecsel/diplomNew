@@ -2,8 +2,10 @@ import path from "node:path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
+const basePath = process.env.VITE_BASE_PATH ?? "/";
+
 export default defineConfig({
-  base: "/diplomNew/",
+  base: basePath.endsWith("/") ? basePath : `${basePath}/`,
   plugins: [react()],
   resolve: {
     alias: {

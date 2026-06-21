@@ -6,6 +6,7 @@ import { PERMISSIONS } from "@/lib/permission-codes";
 import { mapApiErrorToUi, type UiFieldErrors } from "@/lib/api-error-mapper";
 import { toastApiError } from "@/lib/toast-helpers";
 import { ru } from "@/lib/i18n/ru";
+import { useDebouncedValue } from "@/lib/use-debounced-value";
 import { usePagedList } from "@/lib/use-paged-list";
 import { toUserFormInputCreate, toUserFormInputEdit, type UserCreateFormValues, type UserEditFormValues } from "@/features/users/user-form-schema";
 import {
@@ -41,6 +42,7 @@ export function useUsersPage() {
   const canReadUserDetail = can(PERMISSIONS.USERS_READ);
 
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, 300);
   const [statusFilter, setStatusFilter] = useState<UserStatusFilter>("all");
   const [sortKey, setSortKey] = useState<UserSortKey>("user");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
@@ -71,7 +73,7 @@ export function useUsersPage() {
   const usersList = usePagedList<UserDto, { q: string; status: UserStatusFilter }>({
     enabled: Boolean(token),
     limit: 20,
-    params: { q: query.trim(), status: statusFilter },
+    params: { q: debouncedQuery.trim(), status: statusFilter },
     fetchPage: async ({ page, limit, params }) => {
       if (!token) throw new Error(ru.users.listError.fallback);
       try {

@@ -14,13 +14,23 @@ if (existsSync(localEnvPath)) {
   dotenv.config();
 }
 
+function parseCorsOrigins(value: string): string[] {
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().int().positive().default(4000),
   DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("1d"),
-  CORS_ORIGIN: z.string().default("http://localhost:5173")
+  CORS_ORIGIN: z
+    .string()
+    .default("http://localhost:5173")
+    .transform((value) => parseCorsOrigins(value))
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -36,5 +46,5 @@ export const env = {
   databaseUrl: parsed.data.DATABASE_URL,
   jwtSecret: parsed.data.JWT_SECRET,
   jwtExpiresIn: parsed.data.JWT_EXPIRES_IN,
-  corsOrigin: parsed.data.CORS_ORIGIN
+  corsOrigins: parsed.data.CORS_ORIGIN
 };

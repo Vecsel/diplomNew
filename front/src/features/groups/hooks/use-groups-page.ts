@@ -6,6 +6,7 @@ import { PERMISSIONS } from "@/lib/permission-codes";
 import { mapApiErrorToUi, type UiFieldErrors } from "@/lib/api-error-mapper";
 import { toastApiError } from "@/lib/toast-helpers";
 import { ru } from "@/lib/i18n/ru";
+import { useDebouncedValue } from "@/lib/use-debounced-value";
 import { usePagedList } from "@/lib/use-paged-list";
 import { toGroupFormInput, type GroupFormValues } from "@/features/groups/group-form-schema";
 import {
@@ -30,6 +31,7 @@ export function useGroupsPage() {
 
   const [allPermissions, setAllPermissions] = useState<PermissionDto[]>([]);
   const [query, setQuery] = useState("");
+  const debouncedQuery = useDebouncedValue(query, 300);
   const [sortKey, setSortKey] = useState<GroupSortKey>("title");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [isSaving, setIsSaving] = useState(false);
@@ -56,7 +58,7 @@ export function useGroupsPage() {
   const groupsList = usePagedList<GroupDto, { q: string }>({
     enabled: Boolean(token),
     limit: 20,
-    params: { q: query.trim() },
+    params: { q: debouncedQuery.trim() },
     fetchPage: async ({ page, limit, params }) => {
       if (!token) throw new Error(ru.groups.listError.fallback);
       try {
